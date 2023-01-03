@@ -53,6 +53,40 @@ class Token {
     }
 
 
+    async changecolor(interaction) {
+        const role = interaction.options.getRole('role')
+        const unavailable = ['1021072921113919491']
+        let roleColor = interaction.options.getString('color')
+        roleColor = roleColor[0]!=='#'?`#${roleColor}`:roleColor
+        if (!/[0-9a-f#]{7}/i.test(roleColor)) {
+            return new EmbedBuilder()
+                .setTitle(`${roleColor} is not a valid color`)
+        }
+        if (role.color===parseInt(`0x${roleColor.slice(1, 7)}`)) {
+            return new EmbedBuilder()
+                .setTitle(`${role.name} is already that color`)
+        }
+        else if (unavailable.indexOf(role.id) === -1) {
+            let file = JSON.parse(fs.readFileSync('data.json', 'utf-8'))
+            if (file[interaction.user.id].tokens<1) {
+                return new EmbedBuilder()
+                    .setTitle('You do not have enough tokens')
+            }
+            file[interaction.user.id].tokens -= 1
+            fs.writeFileSync('data.json', JSON.stringify(file))
+            await role.edit(
+                {color: roleColor})
+            return new EmbedBuilder()
+                .setTitle(`Successfully changed color of ${role.name} to ${roleColor}`)
+        }
+        else {
+            return new EmbedBuilder()
+                .setTitle("Cannot change color of this role")
+
+        }
+    }
+
+
     async tokencommand(interaction) {
         await interaction.deferReply()
         const choice = interaction.options.getSubcommand()
@@ -60,12 +94,13 @@ class Token {
             const embeds = this.help(interaction)
             await interaction.editReply({embeds: [embeds]})
         }
-        if (choice === 'allitems') {
+        if (choice === 'shop') {
             const embeds = this.shop(interaction)
             await interaction.editReply({embeds: [embeds]})
         }
-        if (choice === 'changecolor') {
-            console.log('hi')
+        if (choice === 'colorchange') {
+            const embeds = await this.changecolor(interaction)
+            await interaction.editReply({embeds: [embeds]})
         }
         if (choice === 'balance') {
             const embeds = this.balance(interaction)

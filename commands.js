@@ -44,20 +44,26 @@ const update = new SlashCommandBuilder()
 const token = new SlashCommandBuilder()
       .setName("token")
       .setDescription("Cool things that you can spend tokens on i guess")
+
       .addSubcommand(command => command.setName('help')
         .setDescription('help with tokens'))
-      .addSubcommandGroup(command => command.setName('shop')
-        .setDescription('token shop')
-        .addSubcommand(subcommand => subcommand.setName('allitems')
-          .setDescription('view all things that you can buy with tokens'))
-        .addSubcommand(subcommand => subcommand.setName('colorchange')
-          .setDescription('Change color')
-          .addStringOption(option => option.setName('role')
-            .setDescription('name of the role you want to change'))
-          .addStringOption(option => option.setName('color')
-            .setDescription('color in hex'))))
+
+      .addSubcommand(subcommand => subcommand.setName('shop')
+        .setDescription('view all things that you can buy with tokens'))
+
       .addSubcommand(command => command.setName('balance')
         .setDescription('Get your balance'))
+
+      .addSubcommand(subcommand => subcommand.setName('colorchange')
+        .setDescription('Change color')
+        .addRoleOption(option => option.setName('role')
+          .setName('role')
+          .setDescription('name of the role you want to change')
+          .setRequired(true))
+        .addStringOption(option => option.setName('color')
+          .setName('color')
+          .setDescription('color in hex')
+          .setRequired(true)))
         
 
 

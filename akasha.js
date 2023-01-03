@@ -161,14 +161,14 @@ async userEmbed(interaction, userId, file) {
 
 roundAR(ar) {
     return 'test'
-    /*
+    
     if (ar>=50) return ar
     else if (ar<=30) return 30
     else if (ar<=35) return 35
     else if (ar<=40) return 40
     else if (ar<=45) return 45
     else if (ar<=49) return 49
-    */
+
 }
 
 getRole(ar) {
