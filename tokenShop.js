@@ -58,7 +58,7 @@ class Token {
         const unavailable = ['1021072921113919491']
         let roleColor = interaction.options.getString('color')
         roleColor = roleColor[0]!=='#'?`#${roleColor}`:roleColor
-        if (!/[0-9a-f#]{7}/i.test(roleColor)) {
+        if (!/#[0-9a-f]{6}/i.test(roleColor)) {
             return new EmbedBuilder()
                 .setTitle(`${roleColor} is not a valid color`)
         }
