@@ -61,27 +61,47 @@ class Token {
         if (!/#[0-9a-f]{6}/i.test(roleColor)) {
             return new EmbedBuilder()
                 .setTitle(`${roleColor} is not a valid color`)
+                .setColor(this.color.color)
+                .setAuthor({name: `Command Done By ${interaction.user.username}#${interaction.user.discriminator}`, iconURL: interaction.user.displayAvatarURL()})
+                .setFooter({text: 'InvalidColor'})
+                .setTimestamp()
         }
         if (role.color===parseInt(`0x${roleColor.slice(1, 7)}`)) {
             return new EmbedBuilder()
                 .setTitle(`${role.name} is already that color`)
+                .setColor(this.color.color)
+                .setAuthor({name: `Command Done By ${interaction.user.username}#${interaction.user.discriminator}`, iconURL: interaction.user.displayAvatarURL()})
+                .setFooter({text: 'SameColorError'})
+                .setTimestamp()
         }
         else if (unavailable.indexOf(role.id) === -1) {
             let file = JSON.parse(fs.readFileSync('data.json', 'utf-8'))
             if (file[interaction.user.id].tokens<1) {
                 return new EmbedBuilder()
                     .setTitle('You do not have enough tokens')
+                    .setColor(this.color.color)
+                    .setAuthor({name: `Command Done By ${interaction.user.username}#${interaction.user.discriminator}`, iconURL: interaction.user.displayAvatarURL()})
+                    .setFooter({text: 'TokenNumError'})
+                    .setTimestamp()
             }
-            file[interaction.user.id].tokens -= 1
-            fs.writeFileSync('data.json', JSON.stringify(file))
             await role.edit(
                 {color: roleColor})
+            file[interaction.user.id].tokens -= 1
+            fs.writeFileSync('data.json', JSON.stringify(file))
             return new EmbedBuilder()
                 .setTitle(`Successfully changed color of ${role.name} to ${roleColor}`)
+                .setColor(this.color.color)
+                .setAuthor({name: `Command Done By ${interaction.user.username}#${interaction.user.discriminator}`, iconURL: interaction.user.displayAvatarURL()})
+                .setFooter({text: 'Color Change Command'})
+                .setTimestamp()
         }
         else {
             return new EmbedBuilder()
                 .setTitle("Cannot change color of this role")
+                .setColor(this.color.color)
+                .setAuthor({name: `Command Done By ${interaction.user.username}#${interaction.user.discriminator}`, iconURL: interaction.user.displayAvatarURL()})
+                .setFooter({text: 'NoAuthColorChange'})
+                .setTimestamp()
 
         }
     }
@@ -94,19 +114,18 @@ class Token {
             const embeds = this.help(interaction)
             await interaction.editReply({embeds: [embeds]})
         }
-        if (choice === 'shop') {
+        else if (choice === 'shop') {
             const embeds = this.shop(interaction)
             await interaction.editReply({embeds: [embeds]})
         }
-        if (choice === 'colorchange') {
+        else if (choice === 'colorchange') {
             const embeds = await this.changecolor(interaction)
             await interaction.editReply({embeds: [embeds]})
         }
-        if (choice === 'balance') {
+        else if (choice === 'balance') {
             const embeds = this.balance(interaction)
             await interaction.editReply({embeds: [embeds]})
         }
-        console.log(choice)
     }
 }
 

@@ -1,4 +1,4 @@
-const { REST, Routes, SlashCommandBuilder, ContextMenuCommandBuilder, ApplicationCommandType } = require('discord.js');
+const { REST, Routes, SlashCommandBuilder, ContextMenuCommandBuilder, ApplicationCommandType, PermissionFlagsBits } = require('discord.js');
 const { cp } = require('fs');
 const commands=  []
 require('dotenv/config')
@@ -65,7 +65,31 @@ const token = new SlashCommandBuilder()
           .setDescription('color in hex')
           .setRequired(true)))
         
+const giverole = new SlashCommandBuilder()
+      .setName('giveroles')
+      .setDescription('you know what this does')
+      .setDefaultMemberPermissions(PermissionFlagsBits.Administrator)
+      .addUserOption(option => option
+        .setName('who')
+        .setDescription('aaaaa')
+        .setRequired(true))
+      .addRoleOption(option => option
+        .setName('role')
+        .setDescription('aaaaaaaa')
+        .setRequired(true))
 
+const removerole = new SlashCommandBuilder()
+      .setName('removeroles')
+      .setDescription('you know what this does')
+      .setDefaultMemberPermissions(PermissionFlagsBits.Administrator)
+      .addUserOption(option => option
+        .setName('who')
+        .setDescription('aaaaa')
+        .setRequired(true))
+      .addRoleOption(option => option
+        .setName('role')
+        .setDescription('aaaaaaaa')
+        .setRequired(true))
 
 
 const test = new SlashCommandBuilder()
@@ -80,6 +104,8 @@ commands.push(profile.toJSON())
 commands.push(test.toJSON())
 commands.push(update.toJSON())
 commands.push(token.toJSON())
+commands.push(giverole.toJSON())
+commands.push(removerole.toJSON())
 
 console.log(commands)
 const rest = new REST({version:'10'}).setToken(process.env.TOKEN)

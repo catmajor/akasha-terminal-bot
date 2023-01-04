@@ -5,6 +5,9 @@ const {EnkaClient} = require("enka-network-api")
 const Akasha = require("./akasha")
 const Rainbow = require("./rainbow")
 const Token = require("./tokenShop")
+const Admin = require("./admin")
+const { domainToUnicode } = require('url')
+const e = require('express')
 require('dotenv/config')
 const client = new Client({intents: [GatewayIntentBits.Guilds, GatewayIntentBits.GuildMessages, GatewayIntentBits.MessageContent]})
 const enka = new EnkaClient()
@@ -14,6 +17,7 @@ const systemMessageColor = new Rainbow()
 
 const tokencmd = new Token(client, systemMessageColor)
 const akasha = new Akasha(client, systemMessageColor)
+const admin = new Admin(client, systemMessageColor)
 loggingColor = new Rainbow()
 
 
@@ -34,19 +38,36 @@ client.on('interactionCreate', async interaction => {
             const data = interaction.options.getString('data')
             
             file = JSON.parse(fs.readFileSync('data.json', 'utf8'))
-            if (!file[person.id].genshinPlayer) {
-                await interaction.reply("This person is not a genshin player")
-                return
-            }
             let info;
             if (Object.keys(file).some(n => n === person.id)) {
-                    info =  file[person.id][data]
-                } else {
-                    await interaction.reply(`user does not exist (you probably selected the bot)`)
+                if (!file[person.id].genshinPlayer) {
+                    const embed = new EmbedBuilder()
+                        .setAuthor({name: `Command Done By ${interaction.user.username}#${interaction.user.discriminator}`, iconURL: interaction.user.displayAvatarURL()})
+                        .setTitle(`This person is not a genshin player`)
+                        .setFooter({text: "NotPlayer"})
+                        .setTimestamp()
+                        .setColor(systemMessageColor.color)
+                    await interaction.reply({embeds: [embed]})
                     return
                 }
-            
-            interaction.reply(`${person.username}#${person.discriminator}'s ${data} is ${info}`)
+                info =  file[person.id][data]
+            } else {
+                const embed = new EmbedBuilder()
+                    .setAuthor({name: `Command Done By ${interaction.user.username}#${interaction.user.discriminator}`, iconURL: interaction.user.displayAvatarURL()})
+                    .setTitle("User probably doesn't exist, if you haven't accidentally selected the bot itself please dm me")
+                    .setFooter({text: "InvalidId"})
+                    .setTimestamp()
+                    .setColor(systemMessageColor.color)
+                await interaction.reply({embeds: [embed]})
+                return
+            }
+            const embed = new EmbedBuilder()
+                .setAuthor({name: `Command Done By ${interaction.user.username}#${interaction.user.discriminator}`, iconURL: interaction.user.displayAvatarURL()})
+                .setTitle(`${person.username}#${person.discriminator}'s ${data} is ${info}`)
+                .setFooter({text: "Info Command"})
+                .setTimestamp()
+                .setColor(systemMessageColor.color)
+            interaction.reply({embeds: [embed]})
         }
 
 
@@ -111,7 +132,13 @@ client.on('interactionCreate', async interaction => {
         if (interaction.commandName === 'profile') {
             file = JSON.parse(fs.readFileSync('data.json', 'utf8'))
             if (!file[interaction.user.id].genshinPlayer) {
-                await interaction.reply("Person does not play genshin")
+                const embed = new EmbedBuilder()
+                        .setAuthor({name: `Command Done By ${interaction.user.username}#${interaction.user.discriminator}`, iconURL: interaction.user.displayAvatarURL()})
+                        .setTitle(`This person is not a genshin player`)
+                        .setFooter({text: "NotPlayer"})
+                        .setTimestamp()
+                        .setColor(systemMessageColor.color)
+                await interaction.reply({embeds: [embed]})
                 return
             }
             const userId = interaction.options.getUser('who').id
@@ -137,7 +164,20 @@ client.on('interactionCreate', async interaction => {
         if (interaction.commandName === 'token') {
             await tokencmd.tokencommand(interaction)
         }
-
+        if (interaction.commandName === 'giveroles') {
+            if (interaction.user.id!=='333634786209955850') {
+                interaction.reply({content: "Summer stop trying to break my bot", ephemeral: true})
+                return
+            }
+            await admin.addrole(interaction)
+        }
+        if (interaction.commandName === 'removeroles') {
+            if (interaction.user.id!=='333634786209955850') {
+                interaction.reply({content: "Summer stop trying to break my bot", ephemeral: true})
+                return
+            }
+            await admin.removerole(interaction)
+        }
         if (interaction.commandName === 'test') {
             const uid = 629640528
             const character = (await enka.fetchUser(uid))
@@ -174,6 +214,7 @@ client.on('interactionCreate', async interaction => {
             } else {
                 elim = file[userId].regularRoles.findIndex(n => n === '1051245075218309210')
                 if (elim!==-1) file[userId].regularRoles[elim] = '1051245030007902257'
+                else file[userId].regularRoles.push('1051245030007902257')
                 file[userId].name = name
                 file[userId].uid = uid
                 file[userId].genshinPlayer = true
@@ -199,6 +240,7 @@ client.on('interactionCreate', async interaction => {
             } else {
                 elim = file[userId].regularRoles.findIndex(n => n === '1051245030007902257')
                 if (elim!==-1) file[userId].regularRoles[elim] = '1051245075218309210'
+                else file[userId].regularRoles.push('1051245075218309210')
                 file[userId].name = name
                 file[userId].invite = invite
                 file[userId].genshinPlayer = false
@@ -266,8 +308,12 @@ client.on('messageCreate', async message => {
     }
     if (/m\s*[o0]\s*m*\s*m*\s*y/i.test(message.content)) {
         const file = JSON.parse(fs.readFileSync('data.json', 'utf-8'))
-
         message.channel.send(`ok ${file[message.author.id].name} :skull:`)
+        if (Math.floor(Math.random()*3)===0) {
+            let guild = client.guilds.cache.get(message.guild.id)
+            admin.addrole(message, guild.roles.cache.find(role=> role.id === '1060022940038611125'), message.author)
+            message.channel.send('Damn you really said it enough times :skull:')
+        }
     }
 })
 
