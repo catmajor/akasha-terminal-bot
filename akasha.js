@@ -66,7 +66,7 @@ characterEmbed(character, interaction, pagenum=0, pagetotal=0) {
         {'name':"\u200B", 'value':"\u200B", inline: true},
         {'name': 'Friendship', 'value': `${character.friendship}`, inline: true},
         {'name':"\u200B", 'value':"**Character Stats:**"},
-        {'name': 'HP', 'value': `${Math.round(status.maxHP.value)}`, inline: true},
+        {'name': 'HP', 'value': `${Math.round(status.maxHealth.value)}`, inline: true},
         {'name': 'ATK','value': `${Math.round(status.attack.value)}`, inline:true},
         {'name':"\u200B", 'value':"\u200B", inline: true},
         {'name': 'DEF','value': `${Math.round(status.defense.value)}`, inline:true},
@@ -160,7 +160,6 @@ async userEmbed(interaction, userId, file) {
 
 
 roundAR(ar) {
-    return 'test'
     
     if (ar>=50) return ar
     else if (ar<=30) return 30

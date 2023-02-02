@@ -115,7 +115,7 @@ const run = async () => {
       console.log('Started refreshing application (/) commands.');
     //katheryne id 927720261879496724
     //akasha id 1021065405810364477
-      await rest.put(Routes.applicationGuildCommands('1021065405810364477', '1021063876097351740'), { body: commands });
+      await rest.put(Routes.applicationGuildCommands('927720261879496724', '925465107264315452'), { body: commands });
   
       console.log('Successfully reloaded application (/) commands.');
     } catch (error) {

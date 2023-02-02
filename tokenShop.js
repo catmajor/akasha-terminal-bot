@@ -55,7 +55,7 @@ class Token {
 
     async changecolor(interaction) {
         const role = interaction.options.getRole('role')
-        const unavailable = ['1021072921113919491']
+        const unavailable = ['1021072921113919491', '927722342577213531', '927712172614778880']
         let roleColor = interaction.options.getString('color')
         roleColor = roleColor[0]!=='#'?`#${roleColor}`:roleColor
         if (!/#[0-9a-f]{6}/i.test(roleColor)) {

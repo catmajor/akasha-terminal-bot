@@ -190,6 +190,8 @@ client.on('interactionCreate', async interaction => {
 
     if (interaction.isModalSubmit()) {
         console.log(interaction.customId)
+        const registeredRole = '958093670421237790' //958093670421237790 in server 1051245030007902257 in testing
+        const nonGenshinRole = '958071522071818292' //958071522071818292 in server 1051245075218309210 in testing
         if (interaction.customId ==='registeryesgenshin') {
             const name = interaction.fields.getTextInputValue('registernameinput')
             const uid = interaction.fields.getTextInputValue('registeruidinput')
@@ -209,12 +211,12 @@ client.on('interactionCreate', async interaction => {
                 dummy.arRole = akasha.getRole(user.playerInfo.level)
                 dummy.tokens = 0
                 dummy.genshinPlayer = true
-                dummy.regularRoles = ['1051245030007902257']
+                dummy.regularRoles = [registeredRole]
                 file[userId] = dummy
             } else {
                 elim = file[userId].regularRoles.findIndex(n => n === '1051245075218309210')
-                if (elim!==-1) file[userId].regularRoles[elim] = '1051245030007902257'
-                else file[userId].regularRoles.push('1051245030007902257')
+                if (elim!==-1) file[userId].regularRoles[elim] = registeredRole
+                else file[userId].regularRoles.push(registeredRole)
                 file[userId].name = name
                 file[userId].uid = uid
                 file[userId].genshinPlayer = true
@@ -235,12 +237,12 @@ client.on('interactionCreate', async interaction => {
                 dummy.invite = invite
                 dummy.tokens = 0
                 dummy.genshinPlayer = false
-                dummy.regularRoles = ['1051245075218309210']
+                dummy.regularRoles = [nonGenshinRole]
                 file[userId] = dummy
             } else {
-                elim = file[userId].regularRoles.findIndex(n => n === '1051245030007902257')
-                if (elim!==-1) file[userId].regularRoles[elim] = '1051245075218309210'
-                else file[userId].regularRoles.push('1051245075218309210')
+                elim = file[userId].regularRoles.findIndex(n => n === registeredRole)
+                if (elim!==-1) file[userId].regularRoles[elim] = nonGenshinRole
+                else file[userId].regularRoles.push(nonGenshinRole)
                 file[userId].name = name
                 file[userId].invite = invite
                 file[userId].genshinPlayer = false
@@ -299,7 +301,7 @@ client.on('messageUpdate', async event => {
 
 client.on('messageCreate', async message => {
     if (client.user.id===message.author.id) return
-    random = Math.floor(Math.random()*5)
+    random = Math.floor(Math.random()*256)
     if (random===1) {
         const file = JSON.parse(fs.readFileSync('data.json', 'utf-8'))
         console.log(systemMessageColor.constant)
@@ -309,7 +311,7 @@ client.on('messageCreate', async message => {
     if (/m\s*[o0]\s*m*\s*m*\s*y/i.test(message.content)) {
         const file = JSON.parse(fs.readFileSync('data.json', 'utf-8'))
         message.channel.send(`ok ${file[message.author.id].name} :skull:`)
-        if (Math.floor(Math.random()*3)===0) {
+        if (Math.floor(Math.random()*101)===0) {
             let guild = client.guilds.cache.get(message.guild.id)
             admin.addrole(message, guild.roles.cache.find(role=> role.id === '1060022940038611125'), message.author)
             message.channel.send('Damn you really said it enough times :skull:')
