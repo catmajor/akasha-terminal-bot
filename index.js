@@ -131,7 +131,8 @@ client.on('interactionCreate', async interaction => {
 
         if (interaction.commandName === 'profile') {
             file = JSON.parse(fs.readFileSync('data.json', 'utf8'))
-            if (!file[interaction.user.id].genshinPlayer) {
+            const userId = interaction.options.getUser('who').id
+            if (!file[userId].genshinPlayer) {
                 const embed = new EmbedBuilder()
                         .setAuthor({name: `Command Done By ${interaction.user.username}#${interaction.user.discriminator}`, iconURL: interaction.user.displayAvatarURL()})
                         .setTitle(`This person is not a genshin player`)
@@ -141,7 +142,7 @@ client.on('interactionCreate', async interaction => {
                 await interaction.reply({embeds: [embed]})
                 return
             }
-            const userId = interaction.options.getUser('who').id
+            
             await akasha.userEmbed(interaction, userId, file)
         }
 
@@ -296,7 +297,7 @@ client.on('messageUpdate', async event => {
         .setAuthor({name: `Message Edit: Original message sent by ${event.author.username}#${event.author.discriminator}`, iconURL: `${event.author.displayAvatarURL()}`})
         .setTimestamp()
     attachments = event.attachments?event.attachments.map(ele => ele):null
-    event.channel.send({embeds: [embed], files: attachments})
+    client.channels.cache.get("942785035373785130").send({embeds: [embed], files: attachments})
 })
 
 client.on('messageCreate', async message => {

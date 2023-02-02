@@ -105,6 +105,7 @@ async addTwoButtons(id1, id2, name1, name2, enabled1=true, enabled2=true) {
 
 async userEmbed(interaction, userId, file) {
     await interaction.deferReply()
+    console.log(file[userId].uid)
     const userData = (await enka.fetchUser(parseInt(file[userId].uid)))
     let page = 0;
     let charembeds;

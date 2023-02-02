@@ -14,18 +14,18 @@ class Admin {
         return [who, role]
     }
 
-    async addrole(interaction, role = null, who = null) {
+    async addrole(interaction, role = 0, who = 0) {
         let command = false
-        if (role===null||who===null) 
+        if (role===0||who===0) 
         {
-            command = true
+            command = true;
             [who, role] = await this.role(interaction)
         }
         let file = JSON.parse(fs.readFileSync('data.json', 'utf-8'))
         try {
             if (role.name.match(/AR/)) {
-                await interaction.editReply({content: 'Cannot give ar roles manually to make sure i dont accidentally break anything'})
-                return
+                await interaction.followUp({content: 'Make sure you delete the appropriate roles after so that shit doesnt break'})
+                
             }
             if (file[who.id].regularRoles.some(n => n===role.id)) {
                 if (command) await interaction.editReply({content: 'User already has this role', ephemeral: true})
